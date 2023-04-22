@@ -30,6 +30,15 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Update="Views\Shapes\DeMUX_3.axaml.cs">
+      <DependentUpon>DeMUX_3.axaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\Shapes\XOR_2.axaml.cs">
+      <DependentUpon>XOR_2.axaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\Shapes\OR_2.axaml.cs">
+      <DependentUpon>OR_2.axaml</DependentUpon>
+    </Compile>
     <Compile Update="Views\Shapes\NOT.axaml.cs">
       <DependentUpon>NOT.axaml</DependentUpon>
     </Compile>

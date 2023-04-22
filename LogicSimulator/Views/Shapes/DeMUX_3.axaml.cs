@@ -4,8 +4,8 @@ using System.ComponentModel;
 
 namespace LogicSimulator.Views.Shapes {
     public partial class DeMUX_3: GateBase, IGate, INotifyPropertyChanged {
-        protected override int CountIns => 2;
-        protected override int CountOuts => 2;
+        public override int CountIns => 2;
+        public override int CountOuts => 2;
         public override UserControl GetSelf() => this;
         protected override IGate GetSelfI => this;
 
@@ -37,5 +37,15 @@ namespace LogicSimulator.Views.Shapes {
                 new Point[] { new(X2, Y2), new(X2 + PinWidth, Y2) }, // Второй выход
             };
         } }
+
+        /*
+         * Мозги
+         */
+
+        public void Brain(ref bool[] ins, ref bool[] outs) {
+            bool yeah = ins[0];
+            int num = (ins[1] ? 4 : 0) | (ins[2] ? 2 : 0) | (ins[3] ? 1 : 0);
+            for (int i = 0; i < 8; i++) outs[i] = yeah && i == num;
+        }
     }
 }

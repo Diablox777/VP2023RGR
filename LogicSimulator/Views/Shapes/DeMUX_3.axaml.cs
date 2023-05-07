@@ -1,4 +1,3 @@
-using Avalonia;
 using Avalonia.Controls;
 using System.ComponentModel;
 
@@ -15,11 +14,7 @@ namespace LogicSimulator.Views.Shapes {
             new int[] { 0, 0, 0 }
         };
 
-        protected override void Init() {
-            height = 30 * 3;
-            InitializeComponent();
-            DataContext = this;
-        }
+        protected override void Init() => InitializeComponent();
 
         /*
          * Мозги

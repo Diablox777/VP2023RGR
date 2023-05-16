@@ -4,15 +4,21 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d" d:DesignWidth="500" d:DesignHeight="800"
-		Width="500" Height="800"
+        Width="500" Height="800"
         x:Class="LogicSimulator.Views.LauncherWindow"
         Icon="/Assets/great-logo.ico"
         Title="LogicSimulator"
-		Padding="8" Background="Lavender">
+		Padding="8"
+		Background="Black">
 
-    <Design.DataContext>
-        <vm:LauncherWindowViewModel/>
-    </Design.DataContext>
+
+	<Window.Background>
+		<ImageBrush Source="/Assets/black.png"/>
+	</Window.Background>
+
+	<Design.DataContext>
+		<vm:LauncherWindowViewModel/>
+	</Design.DataContext>
 
 	<Window.Styles>
 		<Style Selector="ListBoxItem">
@@ -21,7 +27,8 @@
 		</Style>
 		<Style Selector="Button">
 			<Setter Property="BorderThickness" Value="4"/>
-			<Setter Property="BorderBrush" Value="#a0f"/>
+			<Setter Property="BorderBrush" Value="Black"/>
+			<Setter Property="Margin" Value="0 0 0 2"/>
 			<Setter Property="CornerRadius" Value="8"/>
 			<Setter Property="Padding" Value="10"/>
 			<Setter Property="FontSize" Value="24"/>
@@ -45,7 +52,7 @@
 		<Button Command="{Binding Create}">Создать новый проект</Button>
 		<Button Grid.Row="1" Command="{Binding Open}">Открыть проект</Button>
 		<TextBlock Grid.Row="2" Classes="tb">Перечень проектов:</TextBlock>
-		<ListBox Grid.Row="3" Items="{Binding ProjectList}" DoubleTapped="DTapped" Padding="10">
+		<ListBox Grid.Row="3" Items="{Binding ProjectList}" DoubleTapped="DTapped" Padding="10" Opacity="0.3" Background="Black">
 			<ListBox.ItemTemplate>
 				<DataTemplate>
 					<Border Classes="b">

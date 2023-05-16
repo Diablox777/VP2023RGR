@@ -2,20 +2,19 @@
 using Avalonia.ReactiveUI;
 using System;
 
-namespace LogicSimulator {
-    public class Program {
-        // Initialization code. Don't use any Avalonia, third-party APIs or any
-        // SynchronizationContext-reliant code before AppMain is called: things aren't initialized
-        // yet and stuff might break.
-        [STAThread]
-        public static void Main(string[] args) => BuildAvaloniaApp()
-            .StartWithClassicDesktopLifetime(args);
+namespace LogicSimulator
+{
+    public class Program
+    {
+        [STAThread] //однопоточный режим приложения
+        public static void Main(string[] args) => BuildAvaloniaApp() //главная функция приложения.
+            .StartWithClassicDesktopLifetime(args); //запуск приложения с использованием метода StartWithClassicDesktopLifetime,
+                                                    //который создает и запускает новый экземпляр приложения с использованием классической схемы жизненного цикла рабочего стола.
 
-        // Avalonia configuration, don't remove; also used by visual designer.
-        public static AppBuilder BuildAvaloniaApp()
-            => AppBuilder.Configure<App>()
-                .UsePlatformDetect()
-                .LogToTrace()
-                .UseReactiveUI();
+        public static AppBuilder BuildAvaloniaApp() //метод для конфигурации Avalonia-приложения.
+            => AppBuilder.Configure<App>() //указание, что конфигурация настраивает класс App.
+                .UsePlatformDetect() //автоматическое определение платформы.
+                .LogToTrace() //логи пишутся в трассировочную консоль
+                .UseReactiveUI(); //подключение ReactiveUI для обеспечения реакции на изменения данных и интерактивности.
     }
 }

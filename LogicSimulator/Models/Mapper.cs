@@ -13,28 +13,30 @@ using Button = LogicSimulator.Views.Shapes.Button;
 using Avalonia.Input;
 
 namespace LogicSimulator.Models {
-    public class Mapper {
+    public class Mapper
+    {   // Класс Mapper содержит разнообразные элементы, используемые для отрисовки визуальных элементов
+        // в приложении, а также методы для их обновления.
         readonly Line marker = new() { Tag = "Marker", ZIndex = 2, IsVisible = false, Stroke = Brushes.YellowGreen, StrokeThickness = 3 };
         readonly Rectangle marker2 = new() { Tag = "Marker", Classes = new("anim"), ZIndex = 2, IsVisible = false, Stroke = Brushes.MediumAquamarine, StrokeThickness = 3 };
         
-        public Line Marker { get => marker; }
-        public Rectangle Marker2 { get => marker2; }
+        public Line Marker { get => marker; } //используется для отрисовки маркера при выделении элемента (зеленая линия);
+        public Rectangle Marker2 { get => marker2; } //используется для отрисовки маркера при выделении линии (ярко-зеленый прямоугольник);
 
-        public readonly Simulator sim = new(); // забавно, но без public рефлексия вообще не видит этот параметр, от чего ER-diagram_exTRACTOR теряет одну стрелочку зависимости...
+        public readonly Simulator sim = new(); //используется для создания схемы из логических элементов;
 
-        public Canvas canv = new();
+        public Canvas canv = new(); //используется для отрисовки элементов в приложении;
 
         /*
          * Маркер
          */
 
-        private IGate? marked_item;
-        private JoinedItems? marked_line;
+        private IGate? marked_item; //содержит ссылку на выделенный элемент;
+        private JoinedItems? marked_line; //содержит ссылку на сеть связанных линий, выделенную на схеме.
 
-        private void UpdateMarker() {
-            marker2.IsVisible = marked_item != null || marked_line != null;
+        private void UpdateMarker()   { //используется для обновления маркера при выделении элемента или линии
+            marker2.IsVisible = marked_item != null || marked_line != null; //определяет, какой элемент был выделен (линия или логический элемент)
 
-            if (marked_item != null) {
+            if (marked_item != null) { //Если выделен логический элемент, то маркер отображается вокруг этого элемента в виде прямоугольника. 
                 var bound = marked_item.GetBounds();
                 marker2.Margin = new(bound.X, bound.Y);
                 marker2.Width = bound.Width;
@@ -42,7 +44,7 @@ namespace LogicSimulator.Models {
                 marked_line = null;
             }
 
-            if (marked_line != null) {
+            if (marked_line != null) { //Если же выделена линия, то маркер отображается вокруг концов линии в виде растянутого прямоугольника.
                 var line = marked_line.line;
                 var A = line.StartPoint;
                 var B = line.EndPoint;
@@ -56,10 +58,10 @@ namespace LogicSimulator.Models {
          * Выборка элементов
          */
 
-        private int selected_item = 0;
-        public int SelectedItem { get => selected_item; set => selected_item = value; }
+        private int selected_item = 0; //отвечает за выбранный тип элемента.По умолчанию установлено значение "0";
+        public int SelectedItem { get => selected_item; set => selected_item = value; } //указывает на выбранный тип элемента.
 
-        private static IGate CreateItem(int n) {
+        private static IGate CreateItem(int n) { // нумерация логических элементов
             return n switch {
                 0 => new AND_2(),
                 1 => new OR_2(),
@@ -79,35 +81,30 @@ namespace LogicSimulator.Models {
 
         public IGate[] item_types = Enumerable.Range(0, 12).Select(CreateItem).ToArray();
 
-        public IGate GenSelectedItem() => CreateItem(selected_item);
+        public IGate GenSelectedItem() => CreateItem(selected_item); //возвращает выбранный элемент типа IGate.
 
         /*
          * Хранилище
          */
 
         readonly List<IGate> items = new();
-        // readonly MatrixTransform general_transform = new() { Matrix = new(1.0, 0.0, 0.0, 1.0, 0, 0) };
-        // Canvas? itemer;
-        private void AddToMap(IControl item) {
-            /*if (itemer == null) { Снова мимо :///
-                itemer = new Canvas();
-                var layout = new LayoutTransformControl() {
-                    LayoutTransform = general_transform,
-                    Child = itemer,
-                };
-                canv.Children.Add(layout);
-            }
-            itemer.Children.Add(item);*/
+
+        /* Private fields:
+            - items: List элементов IGate - коллекция всех элементов на холсте;
+            - sim: объект класса Simulator, представляющий симуляцию логической схемы;
+            - marked_item: содержит ссылку на выделенный элемент;
+            - marked_line: содержит ссылку на сеть связанных линий, выделенную на схеме.*/
+        private void AddToMap(IControl item) { //используется для добавления элемента на холст в приложении;
             canv.Children.Add(item);
         }
 
-        public void AddItem(IGate item) {
-            items.Add(item);
-            sim.AddItem(item);
-            AddToMap(item.GetSelf());
+        public void AddItem(IGate item) { //добавляет переданный им элемент на холст
+            items.Add(item); //также обновляет список элементов items
+            sim.AddItem(item); //добавляет переданный элемент в симуляцию
+            AddToMap(item.GetSelf()); //добавляет элемент на холст
         }
-        public void RemoveItem(IGate item) {
-            if (marked_item != null) {
+        public void RemoveItem(IGate item) { //удаляющий элемент из коллекции элементов
+            if (marked_item != null) { 
                 marked_item = null;
                 UpdateMarker();
             }
@@ -116,18 +113,18 @@ namespace LogicSimulator.Models {
                 UpdateMarker();
             }
 
-            items.Remove(item);
+            items.Remove(item); 
             sim.RemoveItem(item);
 
-            item.ClearJoins();
+            item.ClearJoins(); //удаляет сам элемент из холста
             ((Control) item).Remove();
         }
-        public void RemoveAll() {
+        public void RemoveAll() { //для удаления всех элементов с холста и очистки симуляции;
             foreach (var item in items.ToArray()) RemoveItem(item);
             sim.Clear();
         }
 
-        private void SaveAllPoses() {
+        private void SaveAllPoses() { //сохраняет позицию каждого элемента на холсте
             foreach (var item in items) item.SavePose();
         }
 
@@ -135,7 +132,7 @@ namespace LogicSimulator.Models {
          * Определение режима перемещения
          */
 
-        int mode = 0;
+        int mode = 0; //переменная, хранящая текущий режим приложения.
         /*
          *    Режимы:
          * 0 - ничего не делает
@@ -163,95 +160,97 @@ namespace LogicSimulator.Models {
                 "Pin" or _ => 0,
             };
         }
-        private void UpdateMode(Control item) => mode = CalcMode((string?) item.Tag);
-        
-        private static bool IsMode(Control item, string[] mods) {
-            var name = (string?) item.Tag;
-            if (name == null) return false;
-            return mods.IndexOf(name) != -1;
+
+        //Этот код содержит методы для обработки событий элементов управления и извлечения данных из этих элементов.
+        private void UpdateMode(Control item) => mode = CalcMode((string?) item.Tag); //устанавливает режим приложения на основании выбранного элемента управления. 
+        //получает ссылку на элемент управления и вызывает CalcMode(), чтобы определить соответствующий режим
+        private static bool IsMode(Control item, string[] mods) { //проверяет, содержит ли элемент определенный набор режимов.
+            var name = (string?) item.Tag; //получает ссылку на элемент управления и на набор режимов
+            if (name == null) return false; //определяет, присутствует ли имя элемента в массиве режимов
+            return mods.IndexOf(name) != -1; //возвращает true, если имя элемента присутствует в массиве, и false в противном случае;
         }
 
-        private static UserControl? GetUC(Control item) {
-            while (item.Parent != null) {
+        private static UserControl? GetUC(Control item) { //рекурсивно переходит по цепочке родительских элементов, пока не найдет UserContro
+            while (item.Parent != null) { //который соответствует переданному элементу управления
                 if (item is UserControl @UC) return @UC;
                 item = (Control) item.Parent;
             }
             return null;
         }
-        private static IGate? GetGate(Control item) {
-            var UC = GetUC(item);
-            if (UC is IGate @gate) return @gate;
-            return null;
+        private static IGate? GetGate(Control item) { 
+            var UC = GetUC(item); //вызывает метод GetUC для получения UserControl,
+            if (UC is IGate @gate) return @gate; // проверяет, является ли UserControl типом IGate
+            return null; //Если да, то метод возвращает объект IGate, иначе возвращает null.
         }
 
         /*
          * Обработка мыши
          */
 
-        Point moved_pos;
-        IGate? moved_item;
-        Point item_old_pos;
-        Size item_old_size;
+        Point moved_pos; //текущее положение перетаскиваемого элемента;
+        IGate? moved_item; //объект класса IGate, который был выбран для перетаскивания;
+        Point item_old_pos; //старое положение выбранного элемента;
+        Size item_old_size; //старый размер выбранного элемента;
 
-        Ellipse? marker_circle;
-        Distantor? start_dist;
-        int marker_mode;
+        Ellipse? marker_circle; //используется для отображения маркера при режиме добавления линии;
+        Distantor? start_dist; //удаленный элемент, от которого начинается добавление линии в режиме добавления удаленной связи
+        int marker_mode; //используется для хранения текущего режима при добавлении линии
 
-        Line? old_join;
-        bool join_start;
-        bool delete_join = false;
+        Line? old_join; //ссылка на существующую линию, которую нужно удалить;
+        bool join_start; //флаг, который определяет, является ли текущий элемент началом линии при добавлении связи на схему
+        bool delete_join = false; //флаг, который определяет, нужно ли удалить текущую связь на схеме;
 
-        public bool lock_self_connect = true;
+        public bool lock_self_connect = true; //флаг, который определяет, должны ли элементы иметь связи сами с собой.
 
-        public void Press(Control item, Point pos) {
-            // Log.Write("PointerPressed: " + item.GetType().Name + " pos: " + pos);
+        public void Press(Control item, Point pos) { // Этот метод обрабатывает событие нажатия на элемент управления
+                                                     // Входные параметры: item - элемент управления, на который нажали, pos - координаты нажатия    
 
-            UpdateMode(item);
-            // Log.Write("new_mode: " + mode);
+            UpdateMode(item); // Обновляем текущий режим редактора
 
-            moved_pos = pos;
+
+            moved_pos = pos; // Запоминаем координаты нажатия и перемещаемый элемент
             moved_item = GetGate(item);
-            tapped = true;
+            tapped = true; // Устанавливаем флаг "нажатия" для перемещения элемента
             if (moved_item != null) item_old_pos = moved_item.GetPos();
 
-            switch (mode) {
+            switch (mode) {  //обрабатываем различные режимы редактора
             case 1:
-                SaveAllPoses();
+                SaveAllPoses(); //сохранение всех позиций элементов на поле
                 break;
             case 3:
                 if (moved_item == null) break;
-                item_old_size = moved_item.GetBodySize();
+                item_old_size = moved_item.GetBodySize(); //изменение размера элемента
                 break;
             case 5 or 6 or 7:
                 if (marker_circle == null) break;
-                var gate = GetGate(marker_circle) ?? throw new Exception("Чё?!"); // Такого не бывает
+                var gate = GetGate(marker_circle) ?? throw new Exception("Что?!"); // создание соединения между элементами
                 start_dist = gate.GetPin(marker_circle);
 
-                var circle_pos = start_dist.GetPos();
+                var circle_pos = start_dist.GetPos(); //устанавливаем координаты маркера на начальную точку соединения
                 marker.StartPoint = marker.EndPoint = circle_pos;
                 marker.IsVisible = true;
                 marker_mode = mode;
                 break;
             case 8:
                 if (item is not Line @join) break;
-                JoinedItems.arrow_to_join.TryGetValue(@join, out var @join2);
+                JoinedItems.arrow_to_join.TryGetValue(@join, out var @join2); //соединение двух линий
                 if (@join2 == null) break;
 
-                if (marked_line == @join2) {
+                if (marked_line == @join2) { //если линия для соединения уже помечена, то снимаем метку и обновляем маркер
                     marked_line = null;
                     UpdateMarker();
                 }
 
-                var dist_a = @join.StartPoint.Hypot(pos);
+                var dist_a = @join.StartPoint.Hypot(pos); //определяем к какому концу соединяться и запоминаем линию
                 var dist_b = @join.EndPoint.Hypot(pos);
                 join_start = dist_a > dist_b;
                 old_join = @join;
 
-                marker.StartPoint = join_start ? @join.StartPoint : pos;
+                marker.StartPoint = join_start ? @join.StartPoint : pos; //устанавливаем координаты и режим маркера для соединения
                 marker.EndPoint = join_start ? pos : @join.EndPoint;
                 marker_mode = CalcMode(join_start ? @join2.A.tag : @join2.B.tag);
 
-                marker.IsVisible = true;
+                marker.IsVisible = true; //показываем маркер и скрываем линию
                 @join.IsVisible = false;
                 break;
             }
@@ -261,16 +260,16 @@ namespace LogicSimulator.Models {
 
         public void FixItem(ref Control res, Point pos, IEnumerable<ILogical> items) {
             foreach (var logic in items) {
-                // if (item.IsPointerOver) { } Гениальная вещь! ;'-} Хотя не, всё равно блокируется после Press и до Release, чего я впринципе хочу избежать ;'-}
+                
                 var item = (Control) logic;
                 var tb = item.TransformedBounds;
-                // if (tb != null && new Rect(tb.Value.Clip.TopLeft, new Size()).Sum(item.Bounds).Contains(pos) && (string?) item.Tag != "Join") res = item; // Гениально! ;'-} НАКОНЕЦ-ТО ЗАРАБОТАЛО! (Так было в 8 лабе)
-                if (tb != null && tb.Value.Bounds.TransformToAABB(tb.Value.Transform).Contains(pos) && (string?) item.Tag != "Join") res = item; // Гениально! Апгрейд прошёл успешно :D
+                
+                if (tb != null && tb.Value.Bounds.TransformToAABB(tb.Value.Transform).Contains(pos) && (string?) item.Tag != "Join") res = item; 
                 FixItem(ref res, pos, item.GetLogicalChildren());
             }
         }
         public void Move(Control item, Point pos, bool use_fix = true) {
-            // Log.Write("PointerMoved: " + item.GetType().Name + " pos: " + pos);
+            
 
             if (use_fix && (mode == 5 || mode == 6 || mode == 7 || mode == 8)) {
                 var tb = canv.TransformedBounds;
@@ -278,7 +277,7 @@ namespace LogicSimulator.Models {
                     item = new Canvas() { Tag = "Scene" };
                     var bounds = tb.Value.Bounds.TransformToAABB(tb.Value.Transform);
                     FixItem(ref item, pos + bounds.TopLeft, canv.Children);
-                    // Log.Write("tag: " + item.Tag);
+                    
                 }
             }
 
@@ -286,9 +285,9 @@ namespace LogicSimulator.Models {
             var tag = (string?) item.Tag;
             if (IsMode(item, mods) && item is Ellipse @ellipse
                 && !(marker_mode == 5 && tag == "In" || marker_mode == 6 && tag == "Out" ||
-                lock_self_connect && moved_item == GetGate(item))) { // То самое место, что не даёт подключить вход ко входу, либо выход к выходу
+                lock_self_connect && moved_item == GetGate(item))) { 
 
-                if (marker_circle != null && marker_circle != @ellipse) { // На случай моментального перехода курсором с одного кружка на другой
+                if (marker_circle != null && marker_circle != @ellipse) { 
                     marker_circle.Fill = new SolidColorBrush(Color.Parse("#0000"));
                     marker_circle.Stroke = Brushes.Gray;
                 }
@@ -303,10 +302,6 @@ namespace LogicSimulator.Models {
 
             if (mode == 8) delete_join = (string?) item.Tag == "Deleter";
 
-            /* if (mode == 0 && (string?) item.Tag == "Join") { DEBUG
-                JoinedItems.arrow_to_join.TryGetValue((Line) item, out var @join);
-                if (@join != null) Log.Write("J a->b: id" + items.IndexOf(@join.A.parent) + " n:" + @join.A.num + "    id" + items.IndexOf(@join.B.parent) + " n:" + @join.B.num);
-            }*/
 
 
 
@@ -353,16 +348,14 @@ namespace LogicSimulator.Models {
 
         public int Release(Control item, Point pos, bool use_fix = true) {
             Move(item, pos, use_fix);
-            // Log.Write("PointerReleased: " + item.GetType().Name + " pos: " + pos);
 
             switch (mode) {
             case 5 or 6 or 7:
                 if (start_dist == null) break;
                 if (marker_circle != null) {
-                    var gate = GetGate(marker_circle) ?? throw new Exception("Чё?!"); // Такого не бывает
+                    var gate = GetGate(marker_circle) ?? throw new Exception("Что?!"); 
                     var end_dist = gate.GetPin(marker_circle);
-                    // Log.Write("Стартовый элемент: " + start_dist.parent + " (" + start_dist.GetPos() + ")");
-                    // Log.Write("Конечный  элемент: " + end_dist.parent   + " (" + end_dist.GetPos()   + ")");
+
                     var newy = new JoinedItems(start_dist, end_dist);
                     AddToMap(newy.line);
                 }
@@ -373,7 +366,7 @@ namespace LogicSimulator.Models {
                 if (old_join == null) break;
                 JoinedItems.arrow_to_join.TryGetValue(old_join, out var @join);
                 if (marker_circle != null && @join != null) {
-                    var gate = GetGate(marker_circle) ?? throw new Exception("Чё?!"); // Такого не бывает
+                    var gate = GetGate(marker_circle) ?? throw new Exception("Что?!"); 
                     var p = gate.GetPin(marker_circle);
                     @join.Delete();
 
@@ -399,13 +392,9 @@ namespace LogicSimulator.Models {
         }
 
         private void Tapped(Control item, Point pos) {
-            // Log.Write("Tapped: " + item.GetType().Name + " pos: " + pos);
             tap_pos = pos;
 
             switch (mode) {
-            /* case 4:
-                if (moved_item != null) RemoveItem(moved_item);
-                break; */
             case 2 or 8:
                 if (item is Line @line) {
                     if (!JoinedItems.arrow_to_join.TryGetValue(@line, out var @join)) break;
@@ -424,7 +413,6 @@ namespace LogicSimulator.Models {
         }
 
         public void WheelMove(Control item, double move, Point pos) {
-            // Log.Write("WheelMoved: " + item.GetType().Name + " delta: " + (move > 0 ? 1 : -1));
             int mode = CalcMode((string?) item.Tag);
             double scale = move > 0 ? 1.1 : 1 / 1.1;
             double inv_scale = 1 / scale;
@@ -452,7 +440,6 @@ namespace LogicSimulator.Models {
         }
 
         public void KeyPressed(Control _, Key key) {
-            // Log.Write("KeyPressed: " + item.GetType().Name + " key: " + key);
             switch (key) {
             case Key.Up:
             case Key.Left:
@@ -499,9 +486,6 @@ namespace LogicSimulator.Models {
             try { current_scheme.Update(arr, joins.ToArray(), states); }
             catch (Exception e) { Log.Write("Save error:\n" + e); }
 
-            /* Log.Write("Items: " + Utils.Obj2json(arr));
-            Log.Write("Joins: " + Utils.Obj2json(joins));
-            Log.Write("States: " + Utils.Obj2json(states)); */
         }
 
         public void ImportScheme(bool start = true) {
@@ -545,7 +529,7 @@ namespace LogicSimulator.Models {
 
             sim.Import(current_scheme.states);
             sim.lock_sim = false;
-            if (start) sim.Start(); // Во время тестирования лучше и близко не прикасаться к этой функции XD
+            if (start) sim.Start();
         }
     }
 }

@@ -29,7 +29,7 @@ namespace UITestsLogicSimulator {
         }
 
         public static AppBuilder BuildAvaloniaApp() {
-            App.lock_inc_build = true;
+         //   App.lock_inc_build = true;
             return AppBuilder
                 .Configure<App>()
                 .UsePlatformDetect()

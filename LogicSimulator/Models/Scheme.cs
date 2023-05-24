@@ -62,66 +62,66 @@ namespace LogicSimulator.Models {
             Delete = ReactiveCommand.Create<Unit, Unit>(_ => { FuncDelete(); return new Unit(); });
         }
 
-        public void Update(object[] items, object[] joins, string states) {
-            this.items = items;
-            this.joins = joins;
-            this.states = states;
-            Modified = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
-            Update();
+        public void Update(object[] items, object[] joins, string states) { 
+            this.items = items; // Обновить массив объектов
+            this.joins = joins; // связей между объектами
+            this.states = states; // состояния объектов
+            Modified = DateTimeOffset.UtcNow.ToUnixTimeSeconds(); 
+            Update(); 
         }
 
 
 
-        public object Export() {
+        public object Export() { 
             return new Dictionary<string, object> {
-                ["name"] = Name,
-                ["created"] = Created,
-                ["modified"] = Modified,
-                ["items"] = items,
-                ["joins"] = joins,
-                ["states"] = states,
+                ["name"] = Name, 
+                ["created"] = Created, 
+                ["modified"] = Modified, 
+                ["items"] = items, 
+                ["joins"] = joins, 
+                ["states"] = states, 
             };
         }
-        public void Update() {
-            Modified = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
-            parent.Modified = Modified;
+        public void Update() { 
+            Modified = DateTimeOffset.UtcNow.ToUnixTimeSeconds(); 
+            parent.Modified = Modified; 
             parent.Save();
         }
 
-        public override string ToString() => Name;
+        public override string ToString() => Name; // Получить строковое представление объекта в виде наименования
 
-        internal void ChangeName(string name) {
+        internal void ChangeName(string name) { 
             Name = name;
             Update();
         }
 
         /*
-         * Кнопочки
+         * Кнопки справа в MW
          */
 
-        void FuncOpen() {
-            ViewModelBase.map.current_scheme = this;
-            ViewModelBase.map.ImportScheme();
+        void FuncOpen() { 
+            ViewModelBase.map.current_scheme = this; 
+            ViewModelBase.map.ImportScheme();  
             parent.UpdateList();
         }
-        void FuncNewItem() {
-            parent.AddScheme(this);
-            parent.UpdateList();
+        void FuncNewItem() { 
+            parent.AddScheme(this); 
+            parent.UpdateList(); 
         }
-        void FuncDelete() {
-            parent.RemoveScheme(this);
-            parent.UpdateList();
+        void FuncDelete() { 
+            parent.RemoveScheme(this); 
+            parent.UpdateList(); 
         }
 
-        public ReactiveCommand<Unit, Unit> Open { get; }
-        public ReactiveCommand<Unit, Unit> NewItem { get; }
-        public ReactiveCommand<Unit, Unit> Delete { get; }
+        public ReactiveCommand<Unit, Unit> Open { get; } 
+        public ReactiveCommand<Unit, Unit> NewItem { get; } 
+        public ReactiveCommand<Unit, Unit> Delete { get; } 
 
-        public bool CanUseSchemeDeleter { get => parent.schemes.Count > 1; }
-        public bool CanOpenMe { get => ViewModelBase.map.current_scheme != this; }
+        public bool CanUseSchemeDeleter { get => parent.schemes.Count > 1; } 
+        public bool CanOpenMe { get => ViewModelBase.map.current_scheme != this; } 
 
-        public void UpdateProps() {
-            this.RaisePropertyChanged(nameof(CanUseSchemeDeleter));
+        public void UpdateProps() { // Метод для обновления свойств объекта на основе измененных значений
+            this.RaisePropertyChanged(nameof(CanUseSchemeDeleter)); 
             this.RaisePropertyChanged(nameof(CanOpenMe));
         }
     }

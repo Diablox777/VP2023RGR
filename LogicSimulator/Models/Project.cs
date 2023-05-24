@@ -56,61 +56,61 @@ namespace LogicSimulator.Models {
 
 
         public Scheme CreateScheme() {
-            var scheme = new Scheme(this);
-            schemes.Add(scheme);
-            Save();
-            return scheme;
+            var scheme = new Scheme(this); 
+            schemes.Add(scheme); 
+            Save(); 
+            return scheme; 
         }
-        public Scheme AddScheme(Scheme? prev) {
-            var scheme = new Scheme(this);
-            int pos = prev == null ? 0 : schemes.IndexOf(prev) + 1;
-            schemes.Insert(pos, scheme);
-            Save();
-            return scheme;
+        public Scheme AddScheme(Scheme? prev) { 
+            var scheme = new Scheme(this); 
+            int pos = prev == null ? 0 : schemes.IndexOf(prev) + 1; 
+            schemes.Insert(pos, scheme); // добавил в коллекцию схем
+            Save(); 
+            return scheme;  
         }
-        public void RemoveScheme(Scheme me) {
-            schemes.Remove(me);
-            Save();
+        public void RemoveScheme(Scheme me) { 
+            schemes.Remove(me); 
+            Save(); 
         }
-        public void UpdateList() {
-            foreach (var scheme in schemes) scheme.UpdateProps();
+        public void UpdateList() { 
+            foreach (var scheme in schemes) scheme.UpdateProps(); 
         }
 
-        public Scheme GetFirstScheme() => schemes[0];
+        public Scheme GetFirstScheme() => schemes[0]; 
 
 
 
-        public object Export() {
+        public object Export() { 
             return new Dictionary<string, object> {
-                ["name"] = Name,
-                ["created"] = Created,
-                ["modified"] = Modified,
-                ["schemes"] = schemes.Select(x => x.Export()).ToArray(),
+                ["name"] = Name, 
+                ["created"] = Created, 
+                ["modified"] = Modified, 
+                ["schemes"] = schemes.Select(x => x.Export()).ToArray(), // Массив словарей, содержащих информацию о схемах проекта
             };
         }
 
         public void Save() => FileHandler.SaveProject(this);
 
-        public int CompareTo(object? obj) {
+        public int CompareTo(object? obj) { // Сравнить проект с другим объектом и вернуть разность времени последнего изменения
             if (obj is not Project proj) throw new ArgumentNullException(nameof(obj));
-            return (int)(proj.Modified - Modified); // Не поддерживает long :///
+            return (int)(proj.Modified - Modified); 
         }
 
-        public override string ToString() {
+        public override string ToString() { 
             return Name + "\nИзменён: " + Modified.UnixTimeStampToString() + "\nСоздан: " + Created.UnixTimeStampToString();
         }
 
-        internal void ChangeName(string name) {
-            Name = name;
-            Modified = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
-            Save();
+        internal void ChangeName(string name) { 
+            Name = name; 
+            Modified = DateTimeOffset.UtcNow.ToUnixTimeSeconds(); 
+            Save(); 
         }
 
-        public bool CanSave() => FileDir != null;
-        public void SaveAs(Window mw) {
-            FileDir = FileHandler.RequestProjectPath(mw);
-            Save();
-            parent.AppendProject(this);
+        public bool CanSave() => FileDir != null; 
+        public void SaveAs(Window mw) { 
+            FileDir = FileHandler.RequestProjectPath(mw); // Запросить путь для сохранения проекта
+            Save(); 
+            parent.AppendProject(this); 
         }
 
         /*

@@ -6,15 +6,14 @@ namespace LogicSimulator
 {
     public class Program
     {
-        [STAThread] //однопоточный режим приложения
-        public static void Main(string[] args) => BuildAvaloniaApp() //главная функция приложения.
-            .StartWithClassicDesktopLifetime(args); //запуск приложения с использованием метода StartWithClassicDesktopLifetime,
-                                                    //который создает и запускает новый экземпляр приложения с использованием классической схемы жизненного цикла рабочего стола.
+        [STAThread] 
+        public static void Main(string[] args) => BuildAvaloniaApp() 
+            .StartWithClassicDesktopLifetime(args); //создает и запускает новый экземпляр приложения с использованием классической схемы жизненного цикла рабочего стола.
 
-        public static AppBuilder BuildAvaloniaApp() //метод для конфигурации Avalonia-приложения.
-            => AppBuilder.Configure<App>() //указание, что конфигурация настраивает класс App.
-                .UsePlatformDetect() //автоматическое определение платформы.
-                .LogToTrace() //логи пишутся в трассировочную консоль
-                .UseReactiveUI(); //подключение ReactiveUI для обеспечения реакции на изменения данных и интерактивности.
+        public static AppBuilder BuildAvaloniaApp() 
+            => AppBuilder.Configure<App>() 
+                .UsePlatformDetect() 
+                .LogToTrace() 
+                .UseReactiveUI(); 
     }
 }

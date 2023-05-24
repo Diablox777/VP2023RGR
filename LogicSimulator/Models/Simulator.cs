@@ -14,7 +14,7 @@ namespace LogicSimulator.Models {
         public bool[] i_buf;
         public bool[] o_buf;
 
-        public Meta(IGate item, int out_id) {
+        public Meta(IGate item, int out_id) { 
             this.item = item;
             ins = Enumerable.Repeat(0, item.CountIns).ToArray();
             outs = Enumerable.Range(out_id, item.CountOuts).ToArray();
@@ -41,7 +41,7 @@ namespace LogicSimulator.Models {
             stop_sim = false;
             task = Task.Run(async () => {
                 for (; ; ) {
-                    await Task.Delay(1000 / 1000); // Повышааааааееееем оборооооооотыыыыыыыыыыыыыыыыыыыыыыыыыыыыыыыыыыыыыыыыыыы!!! 60 герц... Нет, все 1000! ;'-}
+                    await Task.Delay(1000 / 1000);
                     
                     try { Tick(); } catch (Exception e) { Log.Write("Logical crush: " + e); continue; }
 

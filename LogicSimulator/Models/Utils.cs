@@ -41,13 +41,13 @@ namespace LogicSimulator.Models {
                 sb.Append(i switch {
                     '"' => "\\\"",
                     '\\' => "\\\\",
-                    '$' => "{$", // Чисто по моей части ;'-}
+                    '$' => "{$", 
                     _ => i
                 });
             }
             return sb.ToString();
         }
-        public static string Obj2json(object? obj) { // Велосипед ради поддержки своей сериализации классов по типу Point, SolidColorBrush и т.д.
+        public static string Obj2json(object? obj) { // Велосипед ради поддержки сериализации классов от Миши Прилепы по типу Point, SolidColorBrush и т.д.
             switch (obj) {
             case null: return "null";
             case string @str: return '"' + JsonEscape(str) + '"';
@@ -579,7 +579,7 @@ namespace LogicSimulator.Models {
          * Misc
          */
 
-        public static string? Obj2xml(object? obj) => Json2xml(Obj2json(obj)); // Чёт припомнилось свойство транзитивности с дискретной матеши...
+        public static string? Obj2xml(object? obj) => Json2xml(Obj2json(obj)); 
         public static object? Xml2obj(string xml) => Json2obj(Xml2json(xml));
         public static string? Obj2yaml(object? obj) => Json2yaml(Obj2json(obj));
         public static object? Yaml2obj(string xml) => Json2obj(Yaml2json(xml));
@@ -607,9 +607,9 @@ namespace LogicSimulator.Models {
             return sb.ToString().Trim();
         }
 
-        // Странно, почему оригинальный Split() работает, как обычный Split(' '),
-        // ведь во всех языках (по крайней мере в тех, которые я видел до C#) он
-        // игнорирует добавления в ответ пустых строк.
+        
+        
+        
         public static string[] NormSplit(this string str) => str.TrimAll().Split(' ');
 
         public static string GetStackInfo() {
@@ -662,19 +662,19 @@ namespace LogicSimulator.Models {
         public static double Max(this double A, double B) => A > B ? A : B;
 
         public static void Remove(this Control item) {
-            var p = (Panel?) item.Parent; // Именно Panel и добавляет понятие Children ;'-}}}}}}}}}}
+            var p = (Panel?) item.Parent; 
             p?.Children.Remove(item);
         }
 
         public static Point Center(this Visual item, Visual? parent) {
             var tb = item.TransformedBounds;
-            if (tb == null) return new(); // Обычно так не бывает
+            if (tb == null) return new(); 
             var bounds = tb.Value.Bounds.TransformToAABB(tb.Value.Transform);
             var res = bounds.Center;
-            if (parent == null) return res; // parent в качестве точки отсчёта, например холст
+            if (parent == null) return res; 
 
             var tb2 = parent.TransformedBounds;
-            if (tb2 == null) return res; // Обычно так не бывает
+            if (tb2 == null) return res; 
             var bounds2 = tb2.Value.Bounds.TransformToAABB(tb2.Value.Transform);
             return res - bounds2.TopLeft;
         }
@@ -692,7 +692,7 @@ namespace LogicSimulator.Models {
          * SQLite_proj_list абилка
          */
 
-        internal static void Obj2sqlite_proj_list(string[] proj_list, string path) {
+        internal static void Obj2sqlite_proj_list(string[] proj_list, string path) { 
             // Log.Write(Obj2yaml(proj.Export()) + "");
             using var con = new SQLiteConnection("Data Source=" + path);
 
@@ -704,31 +704,31 @@ CREATE TABLE header (
     num      INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
     path     TEXT    NOT NULL
 );";
-            new SQLiteCommand(comm, con).ExecuteReader().Close();
+            new SQLiteCommand(comm, con).ExecuteReader().Close(); 
 
-            var arr = proj_list.Select(x => $"('{x}')");
-            comm = $"INSERT INTO header (path) VALUES {string.Join(", ", arr)};";
-            new SQLiteCommand(comm, con).ExecuteReader().Close();
+            var arr = proj_list.Select(x => $"('{x}')"); 
+            comm = $"INSERT INTO header (path) VALUES {string.Join(", ", arr)};"; // добавляем путь сохранения в нашу БД
+            new SQLiteCommand(comm, con).ExecuteReader().Close(); 
 
             con.Dispose();
         }
 
-        internal static string[] SQLite_proj_list2obj(string path) {
+        internal static string[] SQLite_proj_list2obj(string path) { //Импортируется пространство имен System.Data.SQLite для работы с SQLite
             using var con = new SQLiteConnection("Data Source=" + path);
-            con.Open();
-            if (con.State != ConnectionState.Open) throw new Exception("Не удалось открыть SQLite: " + con.State);
+            con.Open(); 
+            if (con.State != ConnectionState.Open) throw new Exception("Не удалось открыть SQLite: " + con.State); 
 
-            List<string> res = new();
+            List<string> res = new(); // для найденных элементов
 
-            var sql_comm = new SQLiteCommand("SELECT * FROM header", con);
-            using (var reader = sql_comm.ExecuteReader()) {
+            var sql_comm = new SQLiteCommand("SELECT * FROM header", con); //для выполнения SQL-запроса
+            using (var reader = sql_comm.ExecuteReader()) { 
                 if (!reader.HasRows) throw new Exception("Не вышло считать заголовочную таблицу SQLite :/");
                 if (!reader.Read()) throw new Exception("Заголовочная таблица пустует");
 
-                var row = Enumerable.Range(0, reader.VisibleFieldCount).Select(x => reader[x]).ToArray();
+                var row = Enumerable.Range(0, reader.VisibleFieldCount).Select(x => reader[x]).ToArray(); //Элементы кортежа, представляющего строку результата запроса, записываются в массив row.
                 Log.Write("row: " + Obj2json(row));
 
-                res.Add((string) row[1]);
+                res.Add((string) row[1]); //Преобразование элемента массива в строку
             }
 
             con.Dispose();

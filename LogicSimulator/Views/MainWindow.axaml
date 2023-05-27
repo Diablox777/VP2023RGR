@@ -46,7 +46,7 @@
 				<MenuItem Header="Выйти" Command="{Binding Comm}" CommandParameter="Exit"/>
 			</MenuItem>
 			<MenuItem Header="Опции">
-				<CheckBox IsChecked="{Binding LockSelfConnect}">Блокировать самоподключку</CheckBox>
+				<CheckBox IsChecked="{Binding LockSelfConnect}">Блокировать самоподключение</CheckBox>
 			</MenuItem>
 		</Menu>
 		<Grid ColumnDefinitions="*,3*,*">

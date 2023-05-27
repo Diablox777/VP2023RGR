@@ -15,10 +15,10 @@ namespace LogicSimulator {
                 desktop.MainWindow = new LauncherWindow();
 
             base.OnFrameworkInitializationCompleted();
-            IncrementBuildNum();
+ //           IncrementBuildNum();
         }
 
-        private static void IncrementBuildNum() {
+        /*private static void IncrementBuildNum() {
             if (lock_inc_build) return;
 
             string path = "../../../../build.num";
@@ -29,10 +29,6 @@ namespace LogicSimulator {
             File.WriteAllText(path, num.ToString());
         }
 
-        /*
-         * Для тестирования
-         */
-
-        public static bool lock_inc_build = false;
+       public static bool lock_inc_build = false; */
     }
 }

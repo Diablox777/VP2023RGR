@@ -33,7 +33,10 @@
 	</Window.Styles>
 
 	<DockPanel>
-		<Menu DockPanel.Dock="Top" ZIndex="10" Background="White">
+		<Menu DockPanel.Dock="Top" ZIndex="10">
+			<Menu.Background>
+				<ImageBrush Source="/Assets/Line.png" Stretch="Fill"/>
+			</Menu.Background>
 			<MenuItem Header="Файл">
 				<MenuItem Header="Создать новый проект" Command="{Binding Comm}" CommandParameter="Create"/>
 				<MenuItem Header="Открыть проект" Command="{Binding Comm}" CommandParameter="Open"/>
@@ -48,7 +51,13 @@
 		</Menu>
 		<Grid ColumnDefinitions="*,3*,*">
 			<Panel Grid.Column="1">
-				<TextBlock Text="{Binding Logg}" Background="AliceBlue"/>
+				<Border BorderThickness="1" BorderBrush="Black">
+					<TextBlock Text="{Binding Logg}">
+						<TextBlock.Background>
+							<ImageBrush Source="/Assets/BackgroundCenter.png" Stretch="Fill"/>
+						</TextBlock.Background>
+					</TextBlock>
+				</Border>
 				<Canvas Tag="Scene" Name="Canvas" Background="#0000"/>
 			</Panel>
 			<ListBox Items="{Binding ItemTypes}" SelectedIndex="{Binding SelectedItem}" Name="Gates" VirtualizationMode="None">
@@ -59,7 +68,7 @@
 				</ListBox.ItemTemplate>
 			</ListBox>
 			<Grid Grid.Column="2" RowDefinitions="auto,*" DoubleTapped="DTapped">
-				<Border Classes="b" BorderBrush="#4df" Background="White">
+				<Border Classes="b" BorderBrush="#4df" Background="WhiteSmoke">
 					<Grid ColumnDefinitions="*,auto">
 						<TextBlock Tag="p_name" Text="{Binding ProjName}"/>
 						<Button Grid.Column="1" Padding="2" Margin="6 -4 0 -4" Command="{Binding NewItem}">

@@ -12,6 +12,7 @@
 	<AvaloniaResource Include="Styles\**" />
     <None Remove=".gitignore" />
     <None Remove="Assets\Deleter.png" />
+    <None Remove="Assets\Line.png" />
     <None Remove="Assets\NewItem.png" />
     <None Remove="Assets\Resizer.png" />
     <None Remove="Assets\TrashCan.png" />
@@ -30,6 +31,21 @@
     <PackageReference Include="Avalonia.ReactiveUI" Version="0.10.19" />
     <PackageReference Include="System.Data.SQLite.Core" Version="1.0.117" />
     <PackageReference Include="XamlNameReferenceGenerator" Version="1.6.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <AvaloniaResource Update="Assets\BackgroundCenter.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </AvaloniaResource>
+    <AvaloniaResource Update="Assets\NewItem.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </AvaloniaResource>
+  </ItemGroup>
+
+  <ItemGroup>
+    <AvaloniaResource Update="Assets\Line.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </AvaloniaResource>
   </ItemGroup>
 
   <ItemGroup>

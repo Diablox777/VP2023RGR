@@ -24,7 +24,7 @@ namespace LogicSimulator.Views.Shapes {
          * Обработка размеров внутренностей
          */
 
-        public double ButtonSize => width.Min(height) - BodyStrokeSize.Left * 20.5;
+        public double ButtonSize => width.Min(height) - BodyStrokeSize.Left * 25.5;
 
         /*
          * Мозги

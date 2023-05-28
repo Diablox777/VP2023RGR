@@ -10,9 +10,9 @@
 	<Canvas Tag="Gate">
 		<Border Tag="Body" Margin="{Binding BodyMargin}" Background="#08c" BorderThickness="{Binding BodyStrokeSize}" BorderBrush="#4cf" Width="{Binding BodyWidth}" Height="{Binding BodyHeight}" CornerRadius="{Binding BodyRadius}">
 			<Panel>
-				<Image Source="/Assets/xor.png" Width="{Binding BodyWidth}" Height="{Binding BodyHeight}" Stretch="Fill" />
+				<Image Source="/Assets/xor.png" Width="{Binding BodyWidth}" Height="{Binding BodyHeight}" Stretch="Fill" Tag="Body"/>
 				<TextBlock Tag="Body" FontSize="{Binding FontSizze}" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="White"></TextBlock>
-				<Image Tag="Resizer" Width="{Binding ImageSize}" VerticalAlignment="Bottom" HorizontalAlignment="Right" Margin="{Binding ImageMargins}" Height="{Binding ImageSize}" Source="avares://LogicSimulator/Assets/Resizer.png"/>
+				<Image Tag="Resizer" Width="{Binding ImageSize}" VerticalAlignment="Bottom" HorizontalAlignment="Right" Height="{Binding ImageSize}" Source="avares://LogicSimulator/Assets/Resizer.png"/>
 			</Panel>
 		</Border>
 	</Canvas>
